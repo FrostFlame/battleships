@@ -10,12 +10,12 @@ removeDestroyedShips (x:xs) | null x    = removeDestroyedShips xs
 
 checkShipDestroyed :: Field -> Ship -> Coordinate -> (Ship, Bool)
 checkShipDestroyed field ship coordinate = if or [coordinate == coord | coord <- ship] == False then do
-                                               (ship, False)    -- Miss
+                                               (ship, False)
                                            else do
                                                if and [select (fst coord) (select (snd coord) field) == True | coord <- ship, coord /= coordinate] == False then
-                                                   (ship, True) -- Hit, but not sunk
+                                                   (ship, True)
                                                else
-                                                   ([], True)   -- Hit and sunk
+                                                   ([], True)
 
 
 fire :: (Field, [Ship]) -> Coordinate -> (Field, [Ship], Bool)
@@ -24,8 +24,8 @@ fire (enemyField, enemyShips) coordinate = (markShot enemyField (snd coordinate)
                                             or [snd (checkShipDestroyed enemyField ship coordinate) | ship <- enemyShips])
 
 
-fireWithEveryShip :: (Field, [Ship], String) -> IO (Field, [Ship])
-fireWithEveryShip (enemyField, enemyShips, name) = do
+turn :: (Field, [Ship], String) -> IO (Field, [Ship])
+turn (enemyField, enemyShips, name) = do
                                                         putStrLn ("Enter the coordinates to fire shot")
                                                         string <- getLine
                                                         let coord = convertStringToCoordinates string
@@ -47,7 +47,7 @@ fireWithEveryShip (enemyField, enemyShips, name) = do
                                                               if hit then
                                                                   do
                                                                     printField name newEnemyField newEnemyShips
-                                                                    fireWithEveryShip (newEnemyField, newEnemyShips, name)
+                                                                    turn (newEnemyField, newEnemyShips, name)
                                                               else
                                                                   return (enemyField, enemyShips)
                                                         else
