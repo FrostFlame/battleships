@@ -1,9 +1,9 @@
 module Main where
 
-fieldSize = 10
-botname = "bot"
-shipLengthList = [1,1,1,1,2,2,2,3,3,4]
-shipCount = 10
+import Types
+import System.Random
+import Bot
+import Util
 
 
 initField :: Field

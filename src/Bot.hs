@@ -1,6 +1,6 @@
 module Bot where
 import System.Random
-
+import Types
 
 generateShip :: [Coordinate] -> Int -> Int -> IO Ship
 generateShip [] len direction = do

@@ -2,6 +2,7 @@ module Util where
 
 import Data.Char
 import Data.List (permutations)
+import Types
 
 convertStringToCoordinates :: String -> Coordinate
 convertStringToCoordinates ['(', x, ',', y, ')'] = ((ord x) - (ord '0') + 1, (ord y) - (ord '0') + 1)
