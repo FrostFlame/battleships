@@ -1,3 +1,4 @@
+module Util where
 
 import Data.Char
 import Data.List (permutations)

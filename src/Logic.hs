@@ -1,3 +1,5 @@
+module Logic where
+
 select :: Int -> [a] -> a
 select n xs = head (drop (n-1) (take n xs))
 

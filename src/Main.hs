@@ -1,3 +1,4 @@
+module Main where
 
 fieldSize = 10
 botname = "bot"

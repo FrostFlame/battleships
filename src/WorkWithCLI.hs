@@ -1,4 +1,4 @@
-
+module WorkWithCLI where
 
 
 getShipFromCli :: Int -> IO Ship

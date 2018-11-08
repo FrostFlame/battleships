@@ -1,3 +1,4 @@
+module Bot where
 import System.Random
 
 
