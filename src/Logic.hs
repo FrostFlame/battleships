@@ -1,3 +1,9 @@
+select :: Int -> [a] -> a
+select n xs = head (drop (n-1) (take n xs))
+
+replace :: Int -> [a] -> a -> [a]
+replace n xs x = take (n-1) xs ++ [x] ++ drop n xs
+
 markShot :: Field -> Int -> Int -> Field
 markShot field x y = replace x field (replace y (select x field) True)
 
@@ -10,12 +16,12 @@ removeDestroyedShips (x:xs) | null x    = removeDestroyedShips xs
 
 checkShipDestroyed :: Field -> Ship -> Coordinate -> (Ship, Bool)
 checkShipDestroyed field ship coordinate = if or [coordinate == coord | coord <- ship] == False then do
-                                               (ship, False)
+                                               (ship, False)    -- Miss
                                            else do
                                                if and [select (fst coord) (select (snd coord) field) == True | coord <- ship, coord /= coordinate] == False then
-                                                   (ship, True)
+                                                   (ship, True) -- Hit, but not sunk
                                                else
-                                                   ([], True)
+                                                   ([], True)   -- Hit and sunk
 
 
 fire :: (Field, [Ship]) -> Coordinate -> (Field, [Ship], Bool)
@@ -46,7 +52,7 @@ turn (enemyField, enemyShips, name) = do
                                                                   return (enemyField, enemyShips)
                                                               if hit then
                                                                   do
-                                                                    printField name newEnemyField newEnemyShips
+                                                                    printFieldCli name newEnemyField newEnemyShips
                                                                     turn (newEnemyField, newEnemyShips, name)
                                                               else
                                                                   return (enemyField, enemyShips)
