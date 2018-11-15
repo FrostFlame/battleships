@@ -1,5 +1,8 @@
 module WorkWithCLI where
 
+import Types
+import Util
+
 
 getShipFromCli :: Int -> IO Ship
 getShipFromCli len= do

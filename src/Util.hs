@@ -57,7 +57,12 @@ validateShipCoordinates placedShips ship shipLength
         = (sum [abs ((fst coord1) - (fst coord2)) | coord1 <- ship, coord2 <- ship]) * 3 == (shipLength-1) * (shipLength^2 + shipLength)
     | otherwise = False
     
-    
+
+select :: Int -> [a] -> a
+select n xs = head (drop (n-1) (take n xs))
+
+replace :: Int -> [a] -> a -> [a]
+replace n xs x = take (n-1) xs ++ [x] ++ drop n xs
     
     
     

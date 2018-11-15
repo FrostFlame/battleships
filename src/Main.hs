@@ -4,6 +4,7 @@ import Types
 import System.Random
 import Bot
 import Util
+import WorkWithCLI
 
 
 initField :: Field
