@@ -49,5 +49,23 @@ main = do
          shipsComputer <- inputShips 0 [] botname
 
          -- game names [initField, initField] [shipsPlayer, shipsComputer]
-         putStrLn ""
+         putStrLn "6"
          
+game :: [String] -> [Field] -> [[Ship]] -> IO ()
+game names fields ships = do
+                            putStrLn ("\n" ++ head names ++ "'s turn")
+                            if head names == botname then 
+                                do
+                                  let (newField, newShipList) == turnBot (last fields, last ships,last name)
+                            else
+                                do
+                                  printField (last names) (last fields) (last ships)
+                                  let (newField, newShipList) == turn (last fields, last ships,last name)
+                           
+                            if length newShipList == 0 then
+                                do
+                                  putStrLn ("\n" ++ head names ++ " won!\n")
+                                  printField (last names) newField newShipList
+                                  printField (head names) (head fields) (head ships)
+                            else
+                                game [last names, head names] [newField, head fields] [newShipList, head ships]
