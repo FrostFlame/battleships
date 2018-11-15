@@ -13,5 +13,15 @@ generateShip list len direction | direction == 0 = generateShip (list ++ [(fst(l
                                 | direction == 1 = generateShip (list ++ [(fst(last list) + 1, snd(last list))]) (len - 1) direction
                                 
                                 
-generateCoordinate :: Field -> Coordinate
-generateCoordinate field = (5,5) 
+generateCoordinate :: Field -> IO Coordinate
+generateCoordinate field = do
+                            f <- newStdGen
+                            g <- newStdGen
+                            let x = fst(randomR (0, 10) f) :: Int
+                            let y = fst(randomR (0, 10) g) :: Int
+                            if last (take y (last(take x field))) == False then
+                              do
+                                let coord = (x, y)
+                                return coord
+                            else
+                                generateCoordinate field
