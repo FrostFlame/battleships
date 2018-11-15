@@ -5,6 +5,7 @@ import System.Random
 import Bot
 import Util
 import WorkWithCLI
+import Logic
 
 
 initField :: Field
@@ -35,9 +36,32 @@ inputShips listSize placedShips player = if listSize < shipCount then
                                         return (ship : shipList)
                                   else
                                       return []
-
-                                      
          
+
+game :: [String] -> [Field] -> [[Ship]] -> IO ()
+game names fields ships = do
+                            putStrLn ("\n" ++ head names ++ "'s turn")
+                            let newShipList = []
+                            let newField = []
+                            if head names /= botname then 
+                                do
+                                  printFieldCli (last names) (last fields) (last ships)
+                                  (newField, newShipList) <- turn (last fields, last ships, last names)
+                                  putStrLn ""
+                            else
+                                do
+                                  (newField, newShipList) <- turnBot (last fields, last ships, last names)
+                                  putStrLn ""
+                           
+                            if length newShipList == 0 then
+                                do
+                                  putStrLn ("\n" ++ head names ++ " won!\n")
+                                  printFieldCli (last names) newField newShipList
+                                  printFieldCli (head names) (head fields) (head ships)
+                            else
+                                game [last names, head names] [newField, head fields] [newShipList, head ships]
+
+
 main :: IO ()
 main = do
          putStrLn "What is the name of the player?"
@@ -50,22 +74,3 @@ main = do
 
          -- game names [initField, initField] [shipsPlayer, shipsComputer]
          putStrLn "6"
-         
-game :: [String] -> [Field] -> [[Ship]] -> IO ()
-game names fields ships = do
-                            putStrLn ("\n" ++ head names ++ "'s turn")
-                            if head names == botname then 
-                                do
-                                  let (newField, newShipList) == turnBot (last fields, last ships,last name)
-                            else
-                                do
-                                  printField (last names) (last fields) (last ships)
-                                  let (newField, newShipList) == turn (last fields, last ships,last name)
-                           
-                            if length newShipList == 0 then
-                                do
-                                  putStrLn ("\n" ++ head names ++ " won!\n")
-                                  printField (last names) newField newShipList
-                                  printField (head names) (head fields) (head ships)
-                            else
-                                game [last names, head names] [newField, head fields] [newShipList, head ships]
