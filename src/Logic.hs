@@ -32,29 +32,29 @@ fire (enemyField, enemyShips) coordinate = (markShot enemyField (snd coordinate)
 
 turn :: (Field, [Ship], String) -> IO (Field, [Ship])
 turn (enemyField, enemyShips, name) = do
-                                                        putStrLn ("Enter the coordinates to fire shot")
-                                                        string <- getLine
-                                                        let coord = convertStringToCoordinates string
-                                                        if validateCoordinate coord then
-                                                            do
-                                                              let (newEnemyField, newEnemyShips, hit) = fire (enemyField, enemyShips) coord
+                                        putStrLn ("Enter the coordinates to fire shot")
+                                        string <- getLine
+                                        let coord = convertStringToCoordinates string
+                                        if validateCoordinate coord then
+                                            do
+                                              let (newEnemyField, newEnemyShips, hit) = fire (enemyField, enemyShips) coord
 
-                                                              if hit then
-                                                                  putStrLn ("Firing at coordinate (" ++ show ((fst coord) - 1) ++ "," ++ show ((snd coord) - 1) ++ "), Hit")
-                                                              else
-                                                                  putStrLn ("Firing at coordinate (" ++ show ((fst coord) - 1) ++ "," ++ show ((snd coord) - 1) ++ "), Miss")
+                                              if hit then
+                                                  putStrLn ("Firing at coordinate (" ++ show ((fst coord) - 1) ++ "," ++ show ((snd coord) - 1) ++ "), Hit")
+                                              else
+                                                  putStrLn ("Firing at coordinate (" ++ show ((fst coord) - 1) ++ "," ++ show ((snd coord) - 1) ++ "), Miss")
 
-                                                              if length newEnemyShips < length enemyShips then
-                                                                  do
-                                                                    putStrLn "You sunk my battleship!"
-                                                                    return (enemyField, enemyShips)
-                                                              else
-                                                                  return (enemyField, enemyShips)
-                                                              if hit then
-                                                                  do
-                                                                    printFieldCli name newEnemyField newEnemyShips
-                                                                    turn (newEnemyField, newEnemyShips, name)
-                                                              else
-                                                                  return (enemyField, enemyShips)
-                                                        else
-                                                            return (enemyField, enemyShips)
+                                              if length newEnemyShips < length enemyShips then
+                                                  do
+                                                    putStrLn "You sunk my battleship!"
+                                                    return (enemyField, enemyShips)
+                                              else
+                                                  return (enemyField, enemyShips)
+                                              if hit then
+                                                  do
+                                                    printFieldCli name newEnemyField newEnemyShips
+                                                    turn (newEnemyField, newEnemyShips, name)
+                                              else
+                                                  return (enemyField, enemyShips)
+                                        else
+                                            return (enemyField, enemyShips)

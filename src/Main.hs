@@ -18,7 +18,7 @@ inputShip placedShips len player = do
                                         r <- randomRIO(0, 1)
                                         generateShip [] len r
                                       else getShipFromCli len
-                                
+                                    print coords
                               
                                     --to do validate ship location
                                     if validateShipCoordinates placedShips coords len then
