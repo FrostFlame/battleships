@@ -4,6 +4,7 @@ import Types
 import Util
 import WorkWithCLI
 import Bot
+import Control.Monad
 
 markShot :: Field -> Int -> Int -> Field
 markShot field x y = replace x field (replace y (select x field) True)
@@ -44,18 +45,17 @@ turn (enemyField, enemyShips, name) = do
                                               else
                                                   printMissCli coord
 
-                                              if length newEnemyShips < length enemyShips then
-                                                    printSunkCli
-                                                    
-                                              if length newEnemyShips == 0 then
-                                                    return (enemyField, enemyShips)
-                         
-                                              if hit then
-                                                  do
-                                                    printFieldCli name newEnemyField newEnemyShips
-                                                    turn (newEnemyField, newEnemyShips, name)
-                                              else
+                                              when (length newEnemyShips < length enemyShips) printSunkCli
+                                              if (length newEnemyShips == 0) then
                                                   return (enemyField, enemyShips)
+                                              else
+                                                do
+                                                  if hit then
+                                                      do
+                                                        printFieldCli name newEnemyField newEnemyShips
+                                                        turn (newEnemyField, newEnemyShips, name)
+                                                  else
+                                                      return (enemyField, enemyShips)
                                         else
                                             turn (enemyField, enemyShips, name)
                                             
@@ -63,18 +63,23 @@ turn (enemyField, enemyShips, name) = do
                                             
 turnBot :: (Field, [Ship], String) -> IO (Field, [Ship])
 turnBot (enemyField, enemyShips, name) = do
-                                        string <- generateCoordinate
-                                        let coord = convertStringToCoordinates string
+                                        -- string <- getCoordinateCli
+                                        let coord = generateCoordinate enemyField
                                         if validateCoordinate coord then
                                             do
                                               let (newEnemyField, newEnemyShips, hit) = fire (enemyField, enemyShips) coord
 
-                                              if length newEnemyShips == 0 then
-                                                    return (enemyField, enemyShips)
-                         
-                                              if hit then
-                                                  turn (newEnemyField, newEnemyShips, name)
-                                              else
+                                              when (length newEnemyShips < length enemyShips) printSunkCli
+                                              if (length newEnemyShips == 0) then
                                                   return (enemyField, enemyShips)
+                                              else
+                                                do
+                                                  if hit then
+                                                      do
+                                                        -- printFieldCli name newEnemyField newEnemyShips
+                                                        turnBot (newEnemyField, newEnemyShips, name)
+                                                  else
+                                                      return (enemyField, enemyShips)
                                         else
-                                            turn (enemyField, enemyShips, name)
+                                            turnBot (enemyField, enemyShips, name)
+
