@@ -56,11 +56,11 @@ game names fields ships = do
                             putStrLn ("\n" ++ head names ++ "'s turn")
                             if head names == botname then 
                                 do
-                                  let (newField, newShipList) == turnBot (last fields, last ships,last name)
+                                  let (newField, newShipList) = turnBot (last fields, last ships,last names)
                             else
                                 do
                                   printField (last names) (last fields) (last ships)
-                                  let (newField, newShipList) == turn (last fields, last ships,last name)
+                                  let (newField, newShipList) = turn (last fields, last ships,last names)
                            
                             if length newShipList == 0 then
                                 do
