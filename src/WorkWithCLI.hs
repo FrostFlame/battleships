@@ -15,9 +15,14 @@ getShipFromCli len= do
 printFieldCli :: String -> Field -> [Ship] -> IO ()
 printFieldCli playerName field ships = do
                                       putStrLn (playerName ++ "'s field:")
-                                      putStrLn ("#0123456789#\n0" ++ convertFieldToString field ships (1, 1) 0 ++ "#0123456789#")
+                                      putStrLn ("#0123456789#\n0" ++ convertFieldToString field ships (0, 0) 0 ++ "#0123456789#")
                                       putStrLn ""
-                                      
+
+
+printMyFieldCli :: String -> Field -> [Ship] -> IO ()
+printMyFieldCli playerName field ships = do
+                                        putStrLn ("#0123456789#\n0" ++ convertMyFieldToString field ships (0, 0) 0 ++ "#0123456789#")
+                                        putStrLn ""
                                       
 
 
@@ -28,11 +33,11 @@ getCoordinateCli = do
                     return string
                     
 printHitCli :: Coordinate -> IO ()               
-printHitCli coord = putStrLn ("Firing at coordinate (" ++ show ((fst coord) - 1) ++ "," ++ show ((snd coord) - 1) ++ "), Hit")
+printHitCli coord = putStrLn ("Firing at coordinate (" ++ show ((fst coord)) ++ "," ++ show ((snd coord)) ++ "), Hit")
 
 
 printMissCli :: Coordinate -> IO ()               
-printMissCli coord = putStrLn ("Firing at coordinate (" ++ show ((fst coord) - 1) ++ "," ++ show ((snd coord) - 1) ++ "), Miss")
+printMissCli coord = putStrLn ("Firing at coordinate (" ++ show ((fst coord)) ++ "," ++ show ((snd coord)) ++ "), Miss")
 
 printSunkCli ::  IO ()               
 printSunkCli = putStrLn "You sunk my battleship!"

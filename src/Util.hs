@@ -5,7 +5,7 @@ import Data.List (permutations)
 import Types
 
 convertStringToCoordinates :: String -> Coordinate
-convertStringToCoordinates ['(', x, ',', y, ')'] = ((ord x) - (ord '0') + 1, (ord y) - (ord '0') + 1)
+convertStringToCoordinates ['(', x, ',', y, ')'] = ((ord x) - (ord '0'), (ord y) - (ord '0'))
 convertStringToCoordinates _ = (-1, -1)
 
 
@@ -32,17 +32,28 @@ convertFieldToString field ships coordinate x
                                                    else 'x' : convertFieldToString field ships (fst coordinate + 1, snd coordinate) x
                                            else ' ' : convertFieldToString field ships (fst coordinate + 1, snd coordinate) x
                                         
-        | snd coordinate <= fieldSize && x < 9 = [intToDigit(x)] ++ "\n" ++ [intToDigit(x+1)] ++ convertFieldToString field ships (1, snd coordinate + 1) (x+1)
-        | snd coordinate <= fieldSize = [intToDigit(x)] ++ "\n" ++ convertFieldToString field ships (1, snd coordinate + 1) (x+1)
+        | snd coordinate <= fieldSize && x < 9 = [intToDigit(x)] ++ "\n" ++ [intToDigit(x + 1)] ++ convertFieldToString field ships (1, snd coordinate + 1) (x + 1)
+        | snd coordinate <= fieldSize = [intToDigit(x)] ++ "\n" ++ convertFieldToString field ships (1, snd coordinate + 1) (x + 1)
         | otherwise = []
-        
+
+
+convertMyFieldToString :: Field -> [Ship] -> Coordinate -> Int -> String
+convertMyFieldToString field ships coordinate x
+        | fst coordinate <= fieldSize - 1
+          && snd coordinate <= fieldSize - 1 = if or [coordinate == coord | ship <- ships, coord <- ship] then 'x' : convertMyFieldToString field ships (fst coordinate + 1, snd coordinate) x
+                                                   else '-' : convertMyFieldToString field ships (fst coordinate + 1, snd coordinate) x
+                                        
+        | snd coordinate <= fieldSize - 1 && x < 9 = [intToDigit(x)] ++ "\n" ++ [intToDigit(x + 1)] ++ convertMyFieldToString field ships (0, snd coordinate + 1) (x + 1)
+        | snd coordinate <= fieldSize - 1 = [intToDigit(x)] ++ "\n" ++ convertMyFieldToString field ships (1, snd coordinate + 1) (x + 1)
+        | otherwise = []
+
         
         
 validateCoordinate :: Coordinate -> Bool
-validateCoordinate coord = and [ fst coord >= 1,
-                                 snd coord >= 1,
-                                 fst coord <= fieldSize,
-                                 snd coord <= fieldSize
+validateCoordinate coord = and [ fst coord >= 0,
+                                 snd coord >= 0,
+                                 fst coord < fieldSize,
+                                 snd coord < fieldSize
                                ]
                                
                                

@@ -73,5 +73,7 @@ main = do
          --to do add computer ships
          shipsComputer <- inputShips 0 [] botname
 
-         -- game names [initField, initField] [shipsPlayer, shipsComputer]
-         putStrLn "6"
+         printMyFieldCli name initField shipsPlayer
+         printMyFieldCli botname initField shipsComputer
+
+         game names [initField, initField] [shipsPlayer, shipsComputer]
