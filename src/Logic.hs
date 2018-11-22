@@ -75,7 +75,6 @@ turnBot (enemyField, enemyShips, name) = do
                                                 do
                                                   if hit then
                                                       do
-                                                        -- printFieldCli name newEnemyField newEnemyShips
                                                         turnBot (newEnemyField, newEnemyShips, name)
                                                   else
                                                       return (enemyField, enemyShips)

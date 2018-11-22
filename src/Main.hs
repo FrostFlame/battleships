@@ -41,17 +41,11 @@ inputShips listSize placedShips player = if listSize < shipCount then
 game :: [String] -> [Field] -> [[Ship]] -> IO ()
 game names fields ships = do
                             putStrLn ("\n" ++ head names ++ "'s turn")
-                            let newShipList = []
-                            let newField = []
-                            if head names /= botname then 
-                                do
+                            (newField, newShipList) <- if head names /= botname 
+                              then do
                                   printFieldCli (last names) (last fields) (last ships)
-                                  (newField, newShipList) <- turn (last fields, last ships, last names)
-                                  putStrLn "My turn"
-                            else
-                                do
-                                  (newField, newShipList) <- turnBot (last fields, last ships, last names)
-                                  putStrLn ""
+                                  turn (last fields, last ships, last names)
+                              else turnBot (last fields, last ships, last names)
 
                            
                             if length newShipList == 0 then
