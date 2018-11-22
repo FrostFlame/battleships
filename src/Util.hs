@@ -56,11 +56,19 @@ validateCoordinate coord = and [ fst coord >= 0,
                                  snd coord < fieldSize
                                ]
                                
-                               
+     
+getAround  :: Coordinate -> [Coordinate]
+getAround coord = [((fst coord) -1 , (snd coord)-1),  ((fst coord) -1 , (snd coord)  ),
+                   ((fst coord) -1 , (snd coord)+1),  ((fst coord)    , (snd coord)-1),
+                   ((fst coord)    , (snd coord)  ),  ((fst coord)    , (snd coord)+1),
+                   ((fst coord) +1 , (snd coord)-1),  ((fst coord) +1 , (snd coord)  ),
+                   ((fst coord) +1 , (snd coord)+1)]
+     
 validateShipCoordinates :: [Ship] -> Ship -> Int -> Bool
 validateShipCoordinates placedShips ship shipLength
     | length ship /= shipLength = False
     | or [coord1 == coord2 | ship2 <- placedShips, coord1 <- ship, coord2 <- ship2] = False
+    | or [coord1 == around | coord1 <- ship, ship2 <- placedShips, coord2 <- ship2, around <- getAround coord2] = False
     | not (and [validateCoordinate coord | coord <- ship]) = False
     | and (map (==0) [abs ((fst coord1) - (fst coord2)) | coord1 <- ship, coord2 <- ship])
         = (sum [abs ((snd coord1) - (snd coord2)) | coord1 <- ship, coord2 <- ship]) * 3 == (shipLength-1) * (shipLength^2 + shipLength)
