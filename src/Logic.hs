@@ -63,7 +63,6 @@ turn (enemyField, enemyShips, name) = do
                                             
 turnBot :: (Field, [Ship], String) -> IO (Field, [Ship])
 turnBot (enemyField, enemyShips, name) = do
-                                        -- string <- getCoordinateCli
                                         coord <- generateCoordinate enemyField
                                         if validateCoordinate coord then
                                             do
