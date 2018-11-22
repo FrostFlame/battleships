@@ -5,7 +5,7 @@ import Data.List (permutations)
 import Types
 
 convertStringToCoordinates :: String -> Coordinate
-convertStringToCoordinates ['(', x, ',', y, ')'] = ((ord x) - (ord '0') + 1, (ord y) - (ord '0') + 1)
+convertStringToCoordinates ['(', x, ',', y, ')'] = ((ord x) - (ord '0'), (ord y) - (ord '0'))
 convertStringToCoordinates _ = (-1, -1)
 
 
@@ -39,10 +39,10 @@ convertFieldToString field ships coordinate x
         
         
 validateCoordinate :: Coordinate -> Bool
-validateCoordinate coord = and [ fst coord >= 1,
-                                 snd coord >= 1,
-                                 fst coord <= fieldSize,
-                                 snd coord <= fieldSize
+validateCoordinate coord = and [ fst coord >= 0,
+                                 snd coord >= 0,
+                                 fst coord < fieldSize,
+                                 snd coord < fieldSize
                                ]
                                
                                
