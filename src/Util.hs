@@ -43,7 +43,7 @@ convertMyFieldToString field ships coordinate x
           && snd coordinate < fieldSize  = if or [coordinate == coord | ship <- ships, coord <- ship] then 'x' : convertMyFieldToString field ships (fst coordinate + 1, snd coordinate) x
                                                    else '-' : convertMyFieldToString field ships (fst coordinate + 1, snd coordinate) x
                                         
-        | snd coordinate <fieldSize  && x < 9 = [intToDigit(x)] ++ "\n" ++ [intToDigit(x + 1)] ++ convertMyFieldToString field ships (0, snd coordinate + 1) (x + 1)
+        | snd coordinate < fieldSize  && x < 9 = [intToDigit(x)] ++ "\n" ++ [intToDigit(x + 1)] ++ convertMyFieldToString field ships (0, snd coordinate + 1) (x + 1)
         | snd coordinate < fieldSize  = [intToDigit(x)] ++ "\n" ++ convertMyFieldToString field ships (1, snd coordinate + 1) (x + 1)
         | otherwise = []
 
