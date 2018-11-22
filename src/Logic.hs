@@ -7,7 +7,7 @@ import Bot
 import Control.Monad
 
 markShot :: Field -> Int -> Int -> Field
-markShot field x y = replace x field (replace y (select x field) True)
+markShot field x y = replace x field (replace y (field !! x) True)
 
 
 removeDestroyedShips :: [Ship] -> [Ship]
@@ -21,7 +21,7 @@ checkShipDestroyed field ship coordinate = if or [coordinate == coord | coord <-
                                                (ship, False)    -- Miss
                                            else do
                                                if and [select (fst coord) (select (snd coord) field) == True | coord <- ship, coord /= coordinate] == False then
-                                                   (ship, True) -- Hit, but not sunk
+                                                   (ship, True) -- Чек иф селект воркс ас интендед
                                                else
                                                    ([], True)   -- Hit and sunk
 
@@ -68,6 +68,11 @@ turnBot (enemyField, enemyShips, name) = do
                                             do
                                               let (newEnemyField, newEnemyShips, hit) = fire (enemyField, enemyShips) coord
 
+                                              if hit then
+                                                  printHitCli coord 
+                                              else
+                                                  printMissCli coord
+                                              
                                               when (length newEnemyShips < length enemyShips) printSunkCli
                                               if (length newEnemyShips == 0) then
                                                   return (enemyField, enemyShips)
@@ -75,7 +80,6 @@ turnBot (enemyField, enemyShips, name) = do
                                                 do
                                                   if hit then
                                                       do
-                                                        -- printFieldCli name newEnemyField newEnemyShips
                                                         turnBot (newEnemyField, newEnemyShips, name)
                                                   else
                                                       return (enemyField, enemyShips)

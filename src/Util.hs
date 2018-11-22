@@ -22,15 +22,13 @@ splitCoordinatesInString (x:xs) = if x == ';' then
 
 
 
-
-
 convertFieldToString :: Field -> [Ship] -> Coordinate -> Int -> String
 convertFieldToString field ships coordinate x
         | fst coordinate < fieldSize
-          && snd coordinate < fieldSize = if select (fst coordinate) (select (snd coordinate) field) == True then
+          && snd coordinate < fieldSize = if (field !! (snd coordinate)) !! (fst coordinate) == True then
                                                if or [coordinate == coord | ship <- ships, coord <- ship] then 'o' : convertFieldToString field ships (fst coordinate + 1, snd coordinate) x
-                                                   else 'x' : convertFieldToString field ships (fst coordinate + 1, snd coordinate) x
-                                           else ' ' : convertFieldToString field ships (fst coordinate + 1, snd coordinate) x
+                                               else 'x' : convertFieldToString field ships (fst coordinate + 1, snd coordinate) x
+                                          else ' ' : convertFieldToString field ships (fst coordinate + 1, snd coordinate) x
                                         
         | snd coordinate < fieldSize && x < 9 = [intToDigit(x)] ++ "\n" ++ [intToDigit(x + 1)] ++ convertFieldToString field ships (0, snd coordinate + 1) (x + 1)
         | snd coordinate < fieldSize = [intToDigit(x)] ++ "\n" ++ convertFieldToString field ships (1, snd coordinate + 1) (x + 1)
@@ -39,12 +37,12 @@ convertFieldToString field ships coordinate x
 
 convertMyFieldToString :: Field -> [Ship] -> Coordinate -> Int -> String
 convertMyFieldToString field ships coordinate x
-        | fst coordinate < fieldSize 
-          && snd coordinate < fieldSize  = if or [coordinate == coord | ship <- ships, coord <- ship] then 'x' : convertMyFieldToString field ships (fst coordinate + 1, snd coordinate) x
+        | fst coordinate < fieldSize
+          && snd coordinate < fieldSize = if or [coordinate == coord | ship <- ships, coord <- ship] then 'x' : convertMyFieldToString field ships (fst coordinate + 1, snd coordinate) x
                                                    else '-' : convertMyFieldToString field ships (fst coordinate + 1, snd coordinate) x
                                         
-        | snd coordinate < fieldSize  && x < 9 = [intToDigit(x)] ++ "\n" ++ [intToDigit(x + 1)] ++ convertMyFieldToString field ships (0, snd coordinate + 1) (x + 1)
-        | snd coordinate < fieldSize  = [intToDigit(x)] ++ "\n" ++ convertMyFieldToString field ships (1, snd coordinate + 1) (x + 1)
+        | snd coordinate < fieldSize && x < 9 = [intToDigit(x)] ++ "\n" ++ [intToDigit(x + 1)] ++ convertMyFieldToString field ships (0, snd coordinate + 1) (x + 1)
+        | snd coordinate < fieldSize = [intToDigit(x)] ++ "\n" ++ convertMyFieldToString field ships (1, snd coordinate + 1) (x + 1)
         | otherwise = []
 
         
@@ -58,11 +56,11 @@ validateCoordinate coord = and [ fst coord >= 0,
                                
      
 getAround  :: Coordinate -> [Coordinate]
-getAround coord = [((fst coord) -1 , (snd coord)-1),  ((fst coord) -1 , (snd coord)  ),
-                   ((fst coord) -1 , (snd coord)+1),  ((fst coord)    , (snd coord)-1),
-                   ((fst coord)    , (snd coord)  ),  ((fst coord)    , (snd coord)+1),
-                   ((fst coord) +1 , (snd coord)-1),  ((fst coord) +1 , (snd coord)  ),
-                   ((fst coord) +1 , (snd coord)+1)]
+getAround coord = [((fst coord) - 1 , (snd coord) - 1),  ((fst coord) - 1 , (snd coord)    ),
+                   ((fst coord) - 1 , (snd coord) + 1),  ((fst coord)     , (snd coord) - 1),
+                   ((fst coord)     , (snd coord)    ),  ((fst coord)     , (snd coord) + 1),
+                   ((fst coord) + 1 , (snd coord) - 1),  ((fst coord) + 1 , (snd coord)    ),
+                   ((fst coord) + 1 , (snd coord) + 1)]
      
 validateShipCoordinates :: [Ship] -> Ship -> Int -> Bool
 validateShipCoordinates placedShips ship shipLength
@@ -78,10 +76,9 @@ validateShipCoordinates placedShips ship shipLength
     
 
 select :: Int -> [a] -> a
-select n xs = head (drop (n-1) (take n xs))
+select 0 xs = head xs
+select n xs = xs !! n
 
 replace :: Int -> [a] -> a -> [a]
-replace n xs x = take (n-1) xs ++ [x] ++ drop n xs
-    
-    
-    
+replace 0 xs x = [x] ++ drop 1 xs
+replace n xs x = take (n) xs ++ [x] ++ drop (n + 1) xs
