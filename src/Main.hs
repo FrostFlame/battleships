@@ -43,9 +43,11 @@ game names fields ships = do
                             putStrLn ("\n" ++ head names ++ "'s turn")
                             (newField, newShipList) <- if head names /= botname 
                               then do
+                                  printMyFieldCli (head names) (head fields) (head ships)
                                   printFieldCli (last names) (last fields) (last ships)
                                   turn (last fields, last ships, last names)
-                              else turnBot (last fields, last ships, last names)
+                              else do
+                                  turnBot (last fields, last ships, last names)
 
                            
                             if length newShipList == 0 then

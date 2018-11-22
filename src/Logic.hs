@@ -68,6 +68,11 @@ turnBot (enemyField, enemyShips, name) = do
                                             do
                                               let (newEnemyField, newEnemyShips, hit) = fire (enemyField, enemyShips) coord
 
+                                              if hit then
+                                                  printHitCli coord 
+                                              else
+                                                  printMissCli coord
+                                              
                                               when (length newEnemyShips < length enemyShips) printSunkCli
                                               if (length newEnemyShips == 0) then
                                                   return (enemyField, enemyShips)
