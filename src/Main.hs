@@ -47,11 +47,11 @@ game names fields ships = do
                                 do
                                   printFieldCli (last names) (last fields) (last ships)
                                   (newField, newShipList) <- turn (last fields, last ships, last names)
-                                  putStrLn ""
+                                  putStrLn "My turn"
                             else
                                 do
                                   (newField, newShipList) <- turnBot (last fields, last ships, last names)
-                                  putStrLn ""
+                                  putStrLn "Bot turn"
                            
                             if length newShipList == 0 then
                                 do
