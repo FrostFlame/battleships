@@ -51,7 +51,8 @@ game names fields ships = do
                             else
                                 do
                                   (newField, newShipList) <- turnBot (last fields, last ships, last names)
-                                  putStrLn "Bot turn"
+                                  putStrLn ""
+
                            
                             if length newShipList == 0 then
                                 do

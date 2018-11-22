@@ -22,12 +22,10 @@ splitCoordinatesInString (x:xs) = if x == ';' then
 
 
 
-
-
 convertFieldToString :: Field -> [Ship] -> Coordinate -> Int -> String
 convertFieldToString field ships coordinate x
         | fst coordinate < fieldSize
-          && snd coordinate < fieldSize = if select (fst coordinate) (select (snd coordinate) field) == True then
+          && snd coordinate < fieldSize = if (field !! (snd coordinate)) !! (fst coordinate) == True then
                                                if or [coordinate == coord | ship <- ships, coord <- ship] then 'o' : convertFieldToString field ships (fst coordinate + 1, snd coordinate) x
                                                else 'x' : convertFieldToString field ships (fst coordinate + 1, snd coordinate) x
                                           else ' ' : convertFieldToString field ships (fst coordinate + 1, snd coordinate) x
@@ -56,11 +54,19 @@ validateCoordinate coord = and [ fst coord >= 0,
                                  snd coord < fieldSize
                                ]
                                
-                               
+     
+getAround  :: Coordinate -> [Coordinate]
+getAround coord = [((fst coord) - 1 , (snd coord) - 1),  ((fst coord) - 1 , (snd coord)    ),
+                   ((fst coord) - 1 , (snd coord) + 1),  ((fst coord)     , (snd coord) - 1),
+                   ((fst coord)     , (snd coord)    ),  ((fst coord)     , (snd coord) + 1),
+                   ((fst coord) + 1 , (snd coord) - 1),  ((fst coord) + 1 , (snd coord)    ),
+                   ((fst coord) + 1 , (snd coord) + 1)]
+     
 validateShipCoordinates :: [Ship] -> Ship -> Int -> Bool
 validateShipCoordinates placedShips ship shipLength
     | length ship /= shipLength = False
     | or [coord1 == coord2 | ship2 <- placedShips, coord1 <- ship, coord2 <- ship2] = False
+    | or [coord1 == around | coord1 <- ship, ship2 <- placedShips, coord2 <- ship2, around <- getAround coord2] = False
     | not (and [validateCoordinate coord | coord <- ship]) = False
     | and (map (==0) [abs ((fst coord1) - (fst coord2)) | coord1 <- ship, coord2 <- ship])
         = (sum [abs ((snd coord1) - (snd coord2)) | coord1 <- ship, coord2 <- ship]) * 3 == (shipLength-1) * (shipLength^2 + shipLength)
@@ -70,10 +76,9 @@ validateShipCoordinates placedShips ship shipLength
     
 
 select :: Int -> [a] -> a
-select n xs = head (drop (n-1) (take n xs))
+select 0 xs = head xs
+select n xs = xs !! n
 
 replace :: Int -> [a] -> a -> [a]
-replace n xs x = take (n-1) xs ++ [x] ++ drop n xs
-    
-    
-    
+replace 0 xs x = [x] ++ drop 1 xs
+replace n xs x = take (n) xs ++ [x] ++ drop (n + 1) xs

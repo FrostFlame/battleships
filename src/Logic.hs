@@ -7,7 +7,7 @@ import Bot
 import Control.Monad
 
 markShot :: Field -> Int -> Int -> Field
-markShot field x y = replace x field (replace y (select x field) True)
+markShot field x y = replace x field (replace y (field !! x) True)
 
 
 removeDestroyedShips :: [Ship] -> [Ship]
@@ -21,7 +21,7 @@ checkShipDestroyed field ship coordinate = if or [coordinate == coord | coord <-
                                                (ship, False)    -- Miss
                                            else do
                                                if and [select (fst coord) (select (snd coord) field) == True | coord <- ship, coord /= coordinate] == False then
-                                                   (ship, True) -- Hit, but not sunk
+                                                   (ship, True) -- Чек иф селект воркс ас интендед
                                                else
                                                    ([], True)   -- Hit and sunk
 
