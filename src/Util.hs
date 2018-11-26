@@ -27,7 +27,7 @@ convertFieldToString field ships coordinate x
         | fst coordinate < fieldSize
           && snd coordinate < fieldSize = if (field !! (snd coordinate)) !! (fst coordinate) == True then
                                                if or [coordinate == coord | ship <- ships, coord <- ship] then 'o' : convertFieldToString field ships (fst coordinate + 1, snd coordinate) x
-                                               else 'x' : convertFieldToString field ships (fst coordinate + 1, snd coordinate) x
+                                               else '·' : convertFieldToString field ships (fst coordinate + 1, snd coordinate) x
                                           else ' ' : convertFieldToString field ships (fst coordinate + 1, snd coordinate) x
                                         
         | snd coordinate < fieldSize && x < 9 = [intToDigit(x)] ++ "\n" ++ [intToDigit(x + 1)] ++ convertFieldToString field ships (0, snd coordinate + 1) (x + 1)
