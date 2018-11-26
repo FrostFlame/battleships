@@ -39,7 +39,6 @@ turn (enemyField, enemyShips, name) = do
                                         if validateCoordinate coord then
                                             do
                                               let (newEnemyField, newEnemyShips, hit) = fire (enemyField, enemyShips) coord
-                                              print (newEnemyField)
 
                                               if hit then
                                                   printHitCli coord 
@@ -67,6 +66,7 @@ turnBot (enemyField, enemyShips, name) = do
                                         coord <- generateCoordinate enemyField
                                         if validateCoordinate coord then
                                             do
+                                              print coord
                                               let (newEnemyField, newEnemyShips, hit) = fire (enemyField, enemyShips) coord
 
                                               if hit then
