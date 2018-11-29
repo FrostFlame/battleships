@@ -25,10 +25,12 @@ splitCoordinatesInString (x:xs) = if x == ';' then
 convertFieldToString :: Field -> [Ship] -> Coordinate -> Int -> String
 convertFieldToString field ships coordinate x
         | fst coordinate < fieldSize
-          && snd coordinate < fieldSize = if (field !! (snd coordinate)) !! (fst coordinate) == True then
-                                               if or [coordinate == coord | ship <- ships, coord <- ship] then 'o' : convertFieldToString field ships (fst coordinate + 1, snd coordinate) x
-                                               else '·' : convertFieldToString field ships (fst coordinate + 1, snd coordinate) x
-                                          else ' ' : convertFieldToString field ships (fst coordinate + 1, snd coordinate) x
+          && snd coordinate < fieldSize = case (field !! (snd coordinate)) !! (fst coordinate) of
+                                              Empty -> ' ' : convertFieldToString field ships (fst coordinate + 1, snd coordinate) x
+                                              Miss -> '·' : convertFieldToString field ships (fst coordinate + 1, snd coordinate) x
+                                              Hit -> 'o' : convertFieldToString field ships (fst coordinate + 1, snd coordinate) x
+                                              Dead -> 'x' : convertFieldToString field ships (fst coordinate + 1, snd coordinate) x
+                                               --if or [coordinate == coord | ship <- ships, coord <- ship] then 'o' : convertFieldToString field ships (fst coordinate + 1, snd coordinate) x 
                                         
         | snd coordinate < fieldSize && x < 9 = [intToDigit(x)] ++ "\n" ++ [intToDigit(x + 1)] ++ convertFieldToString field ships (0, snd coordinate + 1) (x + 1)
         | snd coordinate < fieldSize = [intToDigit(x)] ++ "\n" ++ convertFieldToString field ships (1, snd coordinate + 1) (x + 1)

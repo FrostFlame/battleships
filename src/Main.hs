@@ -9,7 +9,7 @@ import Logic
 
 
 initField :: Field
-initField = take fieldSize (repeat (take fieldSize (repeat False)))
+initField = take fieldSize (repeat (take fieldSize (repeat Empty)))
 
 
 inputShip :: [Ship] -> Int -> String -> IO Ship
@@ -39,12 +39,12 @@ inputShips listSize placedShips player = if listSize < shipCount then
          
 
 game :: [String] -> [Field] -> [[Ship]] -> IO ()
-game names fields ships initialShips = do
+game names fields ships = do
                                       putStrLn ("\n" ++ head names ++ "'s turn")
                                       (newField, newShipList) <- if head names /= botname 
                                         then do
-                                            printMyFieldCli (head names) (head fields) (head initialShips)
-                                            printFieldCli (last names) (last fields) (last initialShips)
+                                            printMyFieldCli (head names) (head fields) (head ships)
+                                            printFieldCli (last names) (last fields) (last ships)
                                             turn (last fields, last ships, last names)
                                         else do
                                             turnBot (last fields, last ships, last names)
@@ -72,7 +72,5 @@ main = do
          printMyFieldCli name initField shipsPlayer
          printMyFieldCli botname initField shipsComputer
 
-         let initialShipsPlayer <- shipsPlayer
-         let initialShipsComputer <- shipsComputer
 
-         game names [initField, initField] [shipsPlayer, shipsComputer] [initialShipsPlayer, initialShipsComputer]
+         game names [initField, initField] [shipsPlayer, shipsComputer]

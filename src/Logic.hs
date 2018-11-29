@@ -6,8 +6,8 @@ import WorkWithCLI
 import Bot
 import Control.Monad
 
-markShot :: Field -> Int -> Int -> Field
-markShot field x y = replace x field (replace y (field !! x) True)
+markShot :: Field -> Int -> Int -> CellState -> Field
+markShot field x y state = replace x field (replace y (field !! x) state)
 
 
 removeDestroyedShips :: [Ship] -> [Ship]
@@ -16,20 +16,18 @@ removeDestroyedShips (x:xs) | null x    = removeDestroyedShips xs
                             | otherwise = x : removeDestroyedShips xs
 
 
-checkShipDestroyed :: Field -> Ship -> Coordinate -> (Ship, Bool)
-checkShipDestroyed field ship coordinate = if or [coordinate == coord | coord <- ship] == False then do
-                                               (ship, False)    -- Miss
-                                           else do
-                                               if and [select (fst coord) (select (snd coord) field) == True | coord <- ship, coord /= coordinate] == False then
-                                                   (ship, True) -- Чек иф селект воркс ас интендед
+checkShipDestroyed :: Field -> Ship -> Ship
+checkShipDestroyed field ship = if and [select (fst coord) (select (snd coord) field) == Hit | coord <- ship] == False then
+                                                   ship -- Чек иф селект воркс ас интендед
                                                else
-                                                   ([], True)   -- Hit and sunk
+                                                   []   -- Hit and sunk
 
 
 fire :: (Field, [Ship]) -> Coordinate -> (Field, [Ship], Bool)
-fire (enemyField, enemyShips) coordinate = (markShot enemyField (snd coordinate) (fst coordinate),
-                                            removeDestroyedShips [fst (checkShipDestroyed enemyField ship coordinate) | ship <- enemyShips],
-                                            or [snd (checkShipDestroyed enemyField ship coordinate) | ship <- enemyShips])
+fire (enemyField, enemyShips) coordinate =  let flag = if or [coordinate == coord | ship <- enemyShips, coord <- ship] then True else False
+                                                state = if flag then Hit else Miss
+                                            in (markShot enemyField (snd coordinate) (fst coordinate) state,
+                                            removeDestroyedShips [checkShipDestroyed enemyField ship | ship <- enemyShips], flag)
 
 
 turn :: (Field, [Ship], String) -> IO (Field, [Ship])

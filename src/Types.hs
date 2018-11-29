@@ -2,8 +2,10 @@ module Types where
 
 type Coordinate = (Int, Int)
 type Ship = [Coordinate]
-type Field = [[Bool]]
+type Field = [[CellState]]
 type Player = String
+
+data CellState = Empty | Miss | Hit | Dead deriving(Eq)
 
 fieldSize :: Int
 fieldSize = 10
