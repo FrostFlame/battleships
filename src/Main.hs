@@ -39,24 +39,24 @@ inputShips listSize placedShips player = if listSize < shipCount then
          
 
 game :: [String] -> [Field] -> [[Ship]] -> IO ()
-game names fields ships = do
-                            putStrLn ("\n" ++ head names ++ "'s turn")
-                            (newField, newShipList) <- if head names /= botname 
-                              then do
-                                  printMyFieldCli (head names) (head fields) (head ships)
-                                  printFieldCli (last names) (last fields) (last ships)
-                                  turn (last fields, last ships, last names)
-                              else do
-                                  turnBot (last fields, last ships, last names)
+game names fields ships initialShips = do
+                                      putStrLn ("\n" ++ head names ++ "'s turn")
+                                      (newField, newShipList) <- if head names /= botname 
+                                        then do
+                                            printMyFieldCli (head names) (head fields) (head initialShips)
+                                            printFieldCli (last names) (last fields) (last initialShips)
+                                            turn (last fields, last ships, last names)
+                                        else do
+                                            turnBot (last fields, last ships, last names)
 
-                           
-                            if length newShipList == 0 then
-                                do
-                                  putStrLn ("\n" ++ head names ++ " won!\n")
-                                  printFieldCli (last names) newField newShipList
-                                  printFieldCli (head names) (head fields) (head ships)
-                            else
-                                game [last names, head names] [newField, head fields] [newShipList, head ships]
+                                     
+                                      if length newShipList == 0 then
+                                          do
+                                            putStrLn ("\n" ++ head names ++ " won!\n")
+                                            printFieldCli (last names) newField newShipList
+                                            printFieldCli (head names) (head fields) (head ships)
+                                      else
+                                          game [last names, head names] [newField, head fields] [newShipList, head ships]
 
 
 main :: IO ()
@@ -72,4 +72,7 @@ main = do
          printMyFieldCli name initField shipsPlayer
          printMyFieldCli botname initField shipsComputer
 
-         game names [initField, initField] [shipsPlayer, shipsComputer]
+         let initialShipsPlayer <- shipsPlayer
+         let initialShipsComputer <- shipsComputer
+
+         game names [initField, initField] [shipsPlayer, shipsComputer] [initialShipsPlayer, initialShipsComputer]

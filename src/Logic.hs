@@ -47,7 +47,7 @@ turn (enemyField, enemyShips, name) = do
 
                                               when (length newEnemyShips < length enemyShips) printSunkCli
                                               if (length newEnemyShips == 0) then
-                                                  return (newEnemyField, newEnemyShips)
+                                                  return (enemyField, enemyShips)
                                               else
                                                 do
                                                   if hit then
@@ -55,7 +55,7 @@ turn (enemyField, enemyShips, name) = do
                                                         printFieldCli name newEnemyField newEnemyShips
                                                         turn (newEnemyField, newEnemyShips, name)
                                                   else
-                                                      return (newEnemyField, newEnemyShips)
+                                                      return (enemyField, enemyShips)
                                         else
                                             turn (enemyField, enemyShips, name)
                                             
@@ -66,7 +66,6 @@ turnBot (enemyField, enemyShips, name) = do
                                         coord <- generateCoordinate enemyField
                                         if validateCoordinate coord then
                                             do
-                                              print coord
                                               let (newEnemyField, newEnemyShips, hit) = fire (enemyField, enemyShips) coord
 
                                               if hit then
@@ -76,14 +75,14 @@ turnBot (enemyField, enemyShips, name) = do
                                               
                                               when (length newEnemyShips < length enemyShips) printSunkCli
                                               if (length newEnemyShips == 0) then
-                                                  return (newEnemyField, newEnemyShips)
+                                                  return (enemyField, enemyShips)
                                               else
                                                 do
                                                   if hit then
                                                       do
                                                         turnBot (newEnemyField, newEnemyShips, name)
                                                   else
-                                                      return (newEnemyField, newEnemyShips)
+                                                      return (enemyField, enemyShips)
                                         else
                                             turnBot (enemyField, enemyShips, name)
 
