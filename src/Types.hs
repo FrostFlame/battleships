@@ -5,7 +5,7 @@ type Ship = [Coordinate]
 type Field = [[CellState]]
 type Player = String
 
-data CellState = Empty | Miss | Hit | Dead deriving(Eq)
+data CellState = Empty | Miss | Hit | Dead deriving(Eq, Show)
 
 fieldSize :: Int
 fieldSize = 10

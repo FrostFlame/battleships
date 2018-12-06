@@ -5,7 +5,7 @@ import Util
 
 
 getShipFromCli :: Int -> IO Ship
-getShipFromCli len= do
+getShipFromCli len = do
                     putStrLn ("Enter the coordinates of the ship of length " ++ show len ++ "?")
                     string <- getLine
                     let stringCoords = splitCoordinatesInString string
