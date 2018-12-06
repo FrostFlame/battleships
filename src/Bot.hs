@@ -17,9 +17,11 @@ generateCoordinate :: Field -> IO Coordinate
 generateCoordinate field = do
                             f <- newStdGen
                             g <- newStdGen
+                            
                             let x = fst(randomR (0, 9) f) :: Int
                             let y = fst(randomR (0, 9) g) :: Int
-                            if last (take y (last(take x field))) == Empty then
+                            
+                            if last (take (y + 1) (last(take (x + 1) field))) == Empty then
                               do
                                 let coord = (x, y)
                                 return coord
