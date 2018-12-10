@@ -40,8 +40,14 @@ convertFieldToString field ships coordinate x
 convertMyFieldToString :: Field -> [Ship] -> Coordinate -> Int -> String
 convertMyFieldToString field ships coordinate x
         | fst coordinate < fieldSize
-          && snd coordinate < fieldSize = if or [coordinate == coord | ship <- ships, coord <- ship] then 'x' : convertMyFieldToString field ships (fst coordinate + 1, snd coordinate) x
-                                                   else '-' : convertMyFieldToString field ships (fst coordinate + 1, snd coordinate) x
+          && snd coordinate < fieldSize = case (field !! (snd coordinate)) !! (fst coordinate) of
+                                              Empty ->  if or [coordinate == coord | ship <- ships, coord <- ship] then '+' : convertMyFieldToString field ships (fst coordinate + 1, snd coordinate) x
+                                                        else ' ' : convertMyFieldToString field ships (fst coordinate + 1, snd coordinate) x
+                                              Miss -> '·' : convertMyFieldToString field ships (fst coordinate + 1, snd coordinate) x
+                                              Hit -> 'o' : convertMyFieldToString field ships (fst coordinate + 1, snd coordinate) x
+                                              Dead -> 'x' : convertMyFieldToString field ships (fst coordinate + 1, snd coordinate) x
+
+                      
                                         
         | snd coordinate < fieldSize && x < 9 = [intToDigit(x)] ++ "\n" ++ [intToDigit(x + 1)] ++ convertMyFieldToString field ships (0, snd coordinate + 1) (x + 1)
         | snd coordinate < fieldSize = [intToDigit(x)] ++ "\n" ++ convertMyFieldToString field ships (1, snd coordinate + 1) (x + 1)

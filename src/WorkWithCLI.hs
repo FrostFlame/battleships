@@ -21,6 +21,7 @@ printFieldCli playerName field ships = do
 
 printMyFieldCli :: String -> Field -> [Ship] -> IO ()
 printMyFieldCli playerName field ships = do
+                                        putStrLn (playerName ++ "'s field:")
                                         putStrLn ("#0123456789#\n0" ++ convertMyFieldToString field ships (0, 0) 0 ++ "#0123456789#")
                                         putStrLn ""
                                       

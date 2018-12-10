@@ -49,7 +49,6 @@ game names fields ships = do
                                         else do
                                             turnBot (last fields, last ships, last names)
 
-                                      print (length newShipList)
                                       if length newShipList == 0 then
                                           do
                                             putStrLn ("\n" ++ head names ++ " won!\n")

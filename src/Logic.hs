@@ -7,18 +7,28 @@ import Bot
 import Control.Monad
 
 markShot :: Field -> Int -> Int -> CellState -> Field
-markShot field x y state = replace x field (replace y (field !! x) state)
+markShot field x y state  | select y (select x field) == Dead = field
+                          | otherwise = replace x field (replace y (field !! x) state)
+
+                                        
+
+markMissList :: Field -> [Coordinate] -> Field
+markMissList field [] = field
+markMissList field (x:xs) | validateCoordinate x = markMissList (markShot field (snd x) (fst x) Miss ) xs
+                          | otherwise = markMissList field xs
 
 
 markDeadShip :: Field -> Ship -> Field
 markDeadShip field [] = field
-markDeadShip field (x:xs) = markDeadShip (markShot field (snd x) (fst x) Dead) xs
+markDeadShip field (x:xs) = markDeadShip (markShot (markMissList field (getAround x)) (snd x) (fst x) Dead  ) xs
 
 
 mark :: Field -> Coordinate -> CellState -> [Ship] -> Field
 mark field (-1, -1) _ [] = field
 mark field (-1, -1) _ (x:xs) = mark (markDeadShip field (checkShipDestroyed field x)) (-1, -1) Dead xs
-mark field coord state ships = mark (markShot field (snd coord) (fst coord) state) (-1, -1) Dead ships
+mark field coord state ships | select (fst coord) (select (snd coord) field) == Dead = field
+                             | otherwise = mark (markShot field (snd coord) (fst coord) state) (-1, -1) Dead ships
+
 
 removeDestroyedShips :: [Ship] -> [Ship]
 removeDestroyedShips [] = []
@@ -27,7 +37,7 @@ removeDestroyedShips (x:xs) | null x    = removeDestroyedShips xs
 
 
 checkShipNotDestroyed :: Field -> Ship -> Ship
-checkShipNotDestroyed field ship = if and [select (fst coord) (select (snd coord) field) == Hit | coord <- ship] == False then
+checkShipNotDestroyed field ship = if and [select (fst coord) (select (snd coord) field) == Dead | coord <- ship] == False then
                                                    ship
                                                else
                                                    []
@@ -43,8 +53,9 @@ checkShipDestroyed field ship = if and [select (fst coord) (select (snd coord) f
 fire :: (Field, [Ship]) -> Coordinate -> (Field, [Ship], Bool)
 fire (enemyField, enemyShips) coordinate =  let flag = if or [coordinate == coord | ship <- enemyShips, coord <- ship] then True else False
                                                 state = if flag then Hit else Miss
-                                            in (mark enemyField coordinate state enemyShips,
-                                            removeDestroyedShips [checkShipNotDestroyed enemyField ship | ship <- enemyShips], flag)
+                                                newEnemyField = mark enemyField coordinate state enemyShips
+                                            in (newEnemyField,
+                                            removeDestroyedShips [checkShipNotDestroyed newEnemyField ship | ship <- enemyShips], flag)
 
 
 turn :: (Field, [Ship], String) -> IO (Field, [Ship])
@@ -54,7 +65,7 @@ turn (enemyField, enemyShips, name) = do
                                         if validateCoordinate coord then
                                             do
                                               let (newEnemyField, newEnemyShips, hit) = fire (enemyField, enemyShips) coord
-
+                                              
                                               if hit then
                                                   printHitCli coord 
                                               else
