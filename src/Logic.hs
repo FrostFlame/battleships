@@ -89,7 +89,7 @@ turn (enemyField, enemyShips, name) = do
                                             
 turnBot :: (Field, [Ship], String) -> IO (Field, [Ship])
 turnBot (enemyField, enemyShips, name) = do
-                                        coord <- generateCoordinate enemyField
+                                        coord <- checkHitShip enemyField (0,0)
                                         if validateCoordinate coord then
                                             do
                                               let (newEnemyField, newEnemyShips, hit) = fire (enemyField, enemyShips) coord

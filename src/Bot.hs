@@ -27,3 +27,46 @@ generateCoordinate field = do
                                 return coord
                             else
                                 generateCoordinate field
+
+generateNearby :: Coordinate -> Field -> Coordinate
+generateNearby coord field = do
+                        f <- newStdGen
+                        let dir = fst(randomR (0, 3) f) :: Int
+                        --Добавить все варианты в список и проверить, что есть не пустая. Иначе вызываю checkHitShip на следующей (y+1). Проверить, не находится ли координата у края.
+                        let newCoord1 = Coordinate(fst coord, snd coord + 1)
+                        let newCoord2 = Coordinate(fst coord, snd coord - 1)
+                        let newCoord3 = Coordinate(fst coord + 1, snd coord)
+                        let newCoord4 = Coordinate(fst coord - 1, snd coord)
+                        if last (take ((snd newCoord1) + 1) (last(take (fst(newCoord1) + 1) field))) == Empty then
+                              do
+                                return newCoord
+                        else
+                            do
+                            if last (take ((snd newCoord2) + 1) (last(take (fst(newCoord2) + 1) field))) == Empty then
+                                  do
+                                    return newCoord
+                            else
+                                  do
+                                  if last (take ((snd newCoord3) + 1) (last(take (fst(newCoord3) + 1) field))) == Empty then
+                                        do
+                                          return newCoord
+                                  else
+                                        do
+                                        if last (take ((snd newCoord4) + 1) (last(take (fst(newCoord4) + 1) field))) == Empty then
+                                              do
+                                                return newCoord
+                                        else
+                                              do
+                                                newCoord <- if snd coord == 9
+                                                  then
+                                                    Coordinate(fst coord + 1, 0)
+                                                  else
+                                                    Coordinate(fst coord, snd coord + 1)
+                                                checkHitShip field newCoord
+
+checkHitShip :: Field -> Coordinate -> Coordinate
+checkHitShip enemyField coord 
+                              | and (select (fst coord) (select (snd coord) field) /= Hit) (fst coord == 9) (snd coord == 9)  = generateCoordinate enemyField
+                              | and (select (fst coord) (select (snd coord) field) /= Hit) (snd coord < 9)  = checkHitShip enemyField Coordinate(fst coord, (snd coord) + 1)
+                              | and (select (fst coord) (select (snd coord) field) /= Hit) (snd coord == 9)  = checkHitShip enemyField Coordinate((fst coord) + 1, 0)
+                              | otherwise = generateNearby coord enemyField
