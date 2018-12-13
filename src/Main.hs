@@ -19,9 +19,7 @@ inputShip placedShips len player = do
                                         r <- randomRIO(0, 1)
                                         generateShip [] len r
                                       else getShipFromCli len
-                                    print coords
-                              
-                                    --to do validate ship location
+                                    
                                     if validateShipCoordinates placedShips coords len then
                                        return coords
                                     else
@@ -67,9 +65,6 @@ main = do
          shipsPlayer <- inputShips 0 [] name
          --to do add computer ships
          shipsComputer <- inputShips 0 [] botname
-
-         printMyFieldCli name initField shipsPlayer
-         printMyFieldCli botname initField shipsComputer
 
 
          game names [initField, initField] [shipsPlayer, shipsComputer]

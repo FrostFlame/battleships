@@ -33,30 +33,29 @@ generateNearby :: Coordinate -> Field -> IO Coordinate
 generateNearby coord field = do
                         f <- newStdGen
                         let dir = fst(randomR (0, 3) f) :: Int
-                        --Добавить все варианты в список и проверить, что есть не пустая. Иначе вызываю checkHitShip на следующей (y+1). Проверить, не находится ли координата у края.
                         let newCoord1 = (fst coord, snd coord + 1)
                         let newCoord2 = (fst coord, snd coord - 1)
                         let newCoord3 = (fst coord + 1, snd coord)
                         let newCoord4 = (fst coord - 1, snd coord)
-                        if select (fst newCoord1) (select (snd newCoord1) field) == Empty 
+                        if and [validateCoordinate newCoord1, select (fst newCoord1) (select (snd newCoord1) field) == Empty] 
                           then
                               do
                                 return newCoord1
                           else
                             do
-                            if select (fst newCoord2) (select (snd newCoord2) field) == Empty 
+                            if and [validateCoordinate newCoord2, select (fst newCoord2) (select (snd newCoord2) field) == Empty]
                               then
                                   do
                                     return newCoord2
                               else
                                   do
-                                  if select (fst newCoord3) (select (snd newCoord3) field) == Empty 
+                                  if and [validateCoordinate newCoord3, select (fst newCoord3) (select (snd newCoord3) field) == Empty]
                                     then
                                         do
                                           return newCoord3
                                     else
                                         do
-                                        if select (fst newCoord4) (select (snd newCoord4) field) == Empty 
+                                        if and [validateCoordinate newCoord4, select (fst newCoord4) (select (snd newCoord4) field) == Empty]
                                           then
                                               do
                                                 return newCoord4
@@ -69,10 +68,6 @@ generateNearby coord field = do
 checkHitShip :: Field -> Coordinate -> IO Coordinate
 checkHitShip enemyField coord
                               | and [(select (fst coord) (select (snd coord) enemyField) /= Hit), (fst coord == 9), (snd coord == 9)] = generateCoordinate enemyField
-                              | and [(select (fst coord) (select (snd coord) enemyField) /= Hit), (snd coord < 9)] = do
-                                                                                                                        checkHitShip enemyField (fst coord, (snd coord) + 1)
-                              | and [(select (fst coord) (select (snd coord) enemyField) /= Hit), (snd coord == 9)] = do
-                                                                                                                        checkHitShip enemyField ((fst coord) + 1, 0)
-                              | otherwise = do
-                                                print "otherwise"
-                                                generateNearby coord enemyField
+                              | and [(select (fst coord) (select (snd coord) enemyField) /= Hit), (snd coord < 9)] = checkHitShip enemyField (fst coord, (snd coord) + 1)
+                              | and [(select (fst coord) (select (snd coord) enemyField) /= Hit), (snd coord == 9)] = checkHitShip enemyField ((fst coord) + 1, 0)
+                              | otherwise = generateNearby coord enemyField
