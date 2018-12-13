@@ -38,25 +38,29 @@ generateNearby coord field = do
                         let newCoord2 = (fst coord, snd coord - 1)
                         let newCoord3 = (fst coord + 1, snd coord)
                         let newCoord4 = (fst coord - 1, snd coord)
-                        if last (take ((snd newCoord1) + 1) (last(take (fst(newCoord1) + 1) field))) == Empty then
+                        if select (fst newCoord1) (select (snd newCoord1) field) == Empty 
+                          then
                               do
                                 return newCoord1
-                        else
+                          else
                             do
-                            if last (take ((snd newCoord2) + 1) (last(take (fst(newCoord2) + 1) field))) == Empty then
+                            if select (fst newCoord2) (select (snd newCoord2) field) == Empty 
+                              then
                                   do
                                     return newCoord2
-                            else
+                              else
                                   do
-                                  if last (take ((snd newCoord3) + 1) (last(take (fst(newCoord3) + 1) field))) == Empty then
+                                  if select (fst newCoord3) (select (snd newCoord3) field) == Empty 
+                                    then
                                         do
                                           return newCoord3
-                                  else
+                                    else
                                         do
-                                        if last (take ((snd newCoord4) + 1) (last(take (fst(newCoord4) + 1) field))) == Empty then
+                                        if select (fst newCoord4) (select (snd newCoord4) field) == Empty 
+                                          then
                                               do
                                                 return newCoord4
-                                        else
+                                          else
                                               do
                                                 let newCoord | (snd coord == 9) = (fst coord + 1, 0)
                                                              | otherwise = (fst coord, snd coord + 1)
