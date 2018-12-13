@@ -1,6 +1,7 @@
 module Bot where
 import System.Random
 import Types
+import Util
 
 generateShip :: [Coordinate] -> Int -> Int -> IO Ship
 generateShip [] len direction = do
@@ -28,45 +29,46 @@ generateCoordinate field = do
                             else
                                 generateCoordinate field
 
-generateNearby :: Coordinate -> Field -> Coordinate
+generateNearby :: Coordinate -> Field -> IO Coordinate
 generateNearby coord field = do
                         f <- newStdGen
                         let dir = fst(randomR (0, 3) f) :: Int
                         --Добавить все варианты в список и проверить, что есть не пустая. Иначе вызываю checkHitShip на следующей (y+1). Проверить, не находится ли координата у края.
-                        let newCoord1 = Coordinate(fst coord, snd coord + 1)
-                        let newCoord2 = Coordinate(fst coord, snd coord - 1)
-                        let newCoord3 = Coordinate(fst coord + 1, snd coord)
-                        let newCoord4 = Coordinate(fst coord - 1, snd coord)
+                        let newCoord1 = (fst coord, snd coord + 1)
+                        let newCoord2 = (fst coord, snd coord - 1)
+                        let newCoord3 = (fst coord + 1, snd coord)
+                        let newCoord4 = (fst coord - 1, snd coord)
                         if last (take ((snd newCoord1) + 1) (last(take (fst(newCoord1) + 1) field))) == Empty then
                               do
-                                return newCoord
+                                return newCoord1
                         else
                             do
                             if last (take ((snd newCoord2) + 1) (last(take (fst(newCoord2) + 1) field))) == Empty then
                                   do
-                                    return newCoord
+                                    return newCoord2
                             else
                                   do
                                   if last (take ((snd newCoord3) + 1) (last(take (fst(newCoord3) + 1) field))) == Empty then
                                         do
-                                          return newCoord
+                                          return newCoord3
                                   else
                                         do
                                         if last (take ((snd newCoord4) + 1) (last(take (fst(newCoord4) + 1) field))) == Empty then
                                               do
-                                                return newCoord
+                                                return newCoord4
                                         else
                                               do
-                                                newCoord <- if snd coord == 9
-                                                  then
-                                                    Coordinate(fst coord + 1, 0)
-                                                  else
-                                                    Coordinate(fst coord, snd coord + 1)
-                                                checkHitShip field newCoord
+                                                let newCoord | (snd coord == 9) = (fst coord + 1, 0)
+                                                             | otherwise = (fst coord, snd coord + 1)
+                                                (checkHitShip field newCoord)
 
-checkHitShip :: Field -> Coordinate -> Coordinate
-checkHitShip enemyField coord 
-                              | and (select (fst coord) (select (snd coord) field) /= Hit) (fst coord == 9) (snd coord == 9)  = generateCoordinate enemyField
-                              | and (select (fst coord) (select (snd coord) field) /= Hit) (snd coord < 9)  = checkHitShip enemyField Coordinate(fst coord, (snd coord) + 1)
-                              | and (select (fst coord) (select (snd coord) field) /= Hit) (snd coord == 9)  = checkHitShip enemyField Coordinate((fst coord) + 1, 0)
-                              | otherwise = generateNearby coord enemyField
+checkHitShip :: Field -> Coordinate -> IO Coordinate
+checkHitShip enemyField coord
+                              | and [(select (fst coord) (select (snd coord) enemyField) /= Hit), (fst coord == 9), (snd coord == 9)] = generateCoordinate enemyField
+                              | and [(select (fst coord) (select (snd coord) enemyField) /= Hit), (snd coord < 9)] = do
+                                                                                                                        checkHitShip enemyField (fst coord, (snd coord) + 1)
+                              | and [(select (fst coord) (select (snd coord) enemyField) /= Hit), (snd coord == 9)] = do
+                                                                                                                        checkHitShip enemyField ((fst coord) + 1, 0)
+                              | otherwise = do
+                                                print "otherwise"
+                                                generateNearby coord enemyField
