@@ -27,5 +27,7 @@ x — destroyed ship cell
 
 ## Authors
 Volkov Nikolay      —   game initialization, ships placement, validation of coordinates
+
 Kadyrov Amir        —   bot's actions
+
 Serazetdiov Damir   —   game logic, field displaying, processing of turns, shots
