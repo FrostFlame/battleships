@@ -15,13 +15,13 @@ You can run the code interactively
 (x,y) where x is a column and y is a row.
 
 ### Symbols
-~ — empty cell\n
-\# — undamaged ship cell\n
-o — damaged ship cell\n
-x — destroyed ship cell\n
+~ — empty cell\\n
+\# — undamaged ship cell\\n
+o — damaged ship cell\\n
+x — destroyed ship cell\\n
 · — miss
 
 ## Authors
-Volkov Nikolay      —   game initialization, ships placement, validation of coordinates\n
-Kadyrov Amir        —   bot's actions\n
-Serazetdiov Damir   —   game logic, field displaying, processing of turns, shots\n
+Volkov Nikolay      —   game initialization, ships placement, validation of coordinates\\n
+Kadyrov Amir        —   bot's actions\\n
+Serazetdiov Damir   —   game logic, field displaying, processing of turns, shots\\n
