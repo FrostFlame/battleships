@@ -16,7 +16,7 @@ You can run the code interactively
 
 ### Symbols
 ~ — empty cell
-# — undamaged ship cell
+\# — undamaged ship cell
 o — damaged ship cell
 x — destroyed ship cell
 · — miss
