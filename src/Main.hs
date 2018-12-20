@@ -28,12 +28,28 @@ inputShip placedShips len player = do
 
 inputShips :: Int -> [Ship] -> String -> IO [Ship]
 inputShips listSize placedShips player = if listSize < shipCount then
-                                      do
-                                        ship <- inputShip placedShips (shipLengthList !! listSize) player
-                                        shipList <- inputShips (listSize + 1) (ship : placedShips) player
-                                        return (ship : shipList)
-                                  else
-                                      return []
+                                          do
+                                            ship <- inputShip placedShips (shipLengthList !! listSize) player
+                                            -- shipList <- inputShips (listSize + 1) (ship : placedShips) player
+                                            -- return (ship : shipList)
+
+                                            shipList <- if player /= botname
+                                              then
+                                                do
+                                                  -- ship <- inputShip placedShips (shipLengthList !! listSize) player
+                                                  inputShips (listSize + 1) (ship : placedShips) player
+                                              else
+                                                do
+                                                  side <- randomRIO(0, 3)
+                                                  line <- randomRIO(0, 1)
+                                                  generateByStrategy [] side line
+                                            if player /= botname
+                                              then
+                                                return (ship : shipList)
+                                              else
+                                                return shipList
+                                        else
+                                            return []
          
 
 game :: [String] -> [Field] -> [[Ship]] -> IO ()
@@ -65,6 +81,8 @@ main = do
          shipsPlayer <- inputShips 0 [] name
          --to do add computer ships
          shipsComputer <- inputShips 0 [] botname
+
+         printMyFieldCli "bot" initField shipsComputer
 
 
          game names [initField, initField] [shipsPlayer, shipsComputer]

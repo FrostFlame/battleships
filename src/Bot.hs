@@ -2,6 +2,7 @@ module Bot where
 import System.Random
 import Types
 import Util
+import System.Random.Shuffle
 
 generateShip :: [Coordinate] -> Int -> Int -> IO Ship
 generateShip [] len direction = do
@@ -12,6 +13,48 @@ generateShip [] len direction = do
 generateShip list 0 direction = return list
 generateShip list len direction | direction == 0 = generateShip (list ++ [(fst(last list), snd(last list) + 1)]) (len - 1) direction
                                 | direction == 1 = generateShip (list ++ [(fst(last list) + 1, snd(last list))]) (len - 1) direction
+ 
+
+getShip :: Ship -> Int -> Int -> Int -> Int -> Ship
+getShip ship x y 0 dir = ship
+getShip ship x y len dir | dir == 1 = getShip (ship ++ [(y, x)]) (x + 1) y (len - 1) dir
+                         | dir == 0 = getShip (ship ++ [(y, x)]) x (y + 1) (len - 1) dir
+
+generateByStrategy :: [Ship] -> Int -> Int -> IO[Ship]
+generateByStrategy list side line = do
+                                      f <- newStdGen
+                                      g <- newStdGen
+                                      let len1 = shuffle' [2, 2, 4] 3 f
+                                      let len2 = shuffle' [2, 3, 3] 3 g
+                                      case side of
+                                        0 -> case line of
+                                          0 -> do
+                                            return (list ++ [getShip [] 0 0 (select 0 len1) 0, getShip [] 0 ((select 0 len1) + 1) (select 1 len1) 0, getShip [] 0 ((select 0 len1) + (select 1 len1) + 2) (select 2 len1) 0,
+                                              getShip [] 2 0 (select 0 len2) 0, getShip [] 2 ((select 0 len2) + 1) (select 1 len2) 0, getShip [] 2 ((select 0 len2) + (select 1 len2) + 2) (select 2 len2) 0])
+                                          1 -> do
+                                            return (list ++ [getShip [] 2 0 (select 0 len1) 0, getShip [] 2 ((select 0 len1) + 1) (select 1 len1) 0, getShip [] 2 ((select 0 len1) + (select 1 len1) + 2) (select 2 len1) 0,
+                                              getShip [] 0 0 (select 0 len2) 0, getShip [] 0 ((select 0 len2) + 1) (select 1 len2) 0, getShip [] 0 ((select 0 len2) + (select 1 len2) + 2) (select 2 len2) 0])
+                                        1 -> case line of
+                                          0 -> do
+                                            return (list ++ [getShip [] 0 9 (select 0 len1) 1, getShip [] ((select 0 len1) + 1) 9 (select 1 len1) 1, getShip [] ((select 0 len1) + (select 1 len1) + 2) 9 (select 2 len1) 1,
+                                              getShip [] 0 7 (select 0 len2) 1, getShip [] ((select 0 len2) + 1) 7 (select 1 len2) 1, getShip [] ((select 0 len2) + (select 1 len2) + 2) 7 (select 2 len2) 1])
+                                          1 -> do
+                                            return (list ++ [getShip [] 0 7 (select 0 len1) 1, getShip [] ((select 0 len1) + 1) 7 (select 1 len1) 1, getShip [] ((select 0 len1) + (select 1 len1) + 2) 7 (select 2 len1) 1,
+                                              getShip [] 0 9 (select 0 len2) 1, getShip [] ((select 0 len2) + 1) 9 (select 1 len2) 1, getShip [] ((select 0 len2) + (select 1 len2) + 2) 9 (select 2 len2) 1])
+                                        2 -> case line of
+                                          0 -> do
+                                            return (list ++ [getShip [] 9 0 (select 0 len1) 0, getShip [] 9 ((select 0 len1) + 1) (select 1 len1) 0, getShip [] 9 ((select 0 len1) + (select 1 len1) + 2) (select 2 len1) 0,
+                                              getShip [] 7 0 (select 0 len2) 0, getShip [] 7 ((select 0 len2) + 1) (select 1 len2) 0, getShip [] 7 ((select 0 len2) + (select 1 len2) + 2) (select 2 len2) 0])
+                                          1 -> do
+                                            return (list ++ [getShip [] 7 0 (select 0 len1) 0, getShip [] 7 ((select 0 len1) + 1) (select 1 len1) 0, getShip [] 7 ((select 0 len1) + (select 1 len1) + 2) (select 2 len1) 0,
+                                              getShip [] 9 0 (select 0 len2) 0, getShip [] 9 ((select 0 len2) + 1) (select 1 len2) 0, getShip [] 9 ((select 0 len2) + (select 1 len2) + 2) (select 2 len2) 0])
+                                        3 -> case line of
+                                          0 -> do
+                                            return (list ++ [getShip [] 0 0 (select 0 len1) 1, getShip [] ((select 0 len1) + 1) 0 (select 1 len1) 1, getShip [] ((select 0 len1) + (select 1 len1) + 2) 0 (select 2 len1) 1,
+                                              getShip [] 0 2 (select 0 len2) 1, getShip [] ((select 0 len2) + 1) 2 (select 1 len2) 1, getShip [] ((select 0 len2) + (select 1 len2) + 2) 2 (select 2 len2) 1])
+                                          1 -> do
+                                            return (list ++ [getShip [] 0 2 (select 0 len1) 1, getShip [] ((select 0 len1) + 1) 2 (select 1 len1) 1, getShip [] ((select 0 len1) + (select 1 len1) + 2) 2 (select 2 len1) 1,
+                                              getShip [] 0 0 (select 0 len2) 1, getShip [] ((select 0 len2) + 1) 0 (select 1 len2) 1, getShip [] ((select 0 len2) + (select 1 len2) + 2) 0 (select 2 len2) 1])
                                 
                                 
 generateCoordinate :: Field -> IO Coordinate
