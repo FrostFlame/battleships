@@ -27,29 +27,22 @@ inputShip placedShips len player = do
 
 
 inputShips :: Int -> [Ship] -> String -> IO [Ship]
-inputShips listSize placedShips player = if listSize < shipCount then
-                                          do
-                                            ship <- inputShip placedShips (shipLengthList !! listSize) player
-                                            -- shipList <- inputShips (listSize + 1) (ship : placedShips) player
-                                            -- return (ship : shipList)
-
-                                            shipList <- if player /= botname
-                                              then
-                                                do
-                                                  -- ship <- inputShip placedShips (shipLengthList !! listSize) player
-                                                  inputShips (listSize + 1) (ship : placedShips) player
-                                              else
-                                                do
-                                                  side <- randomRIO(0, 3)
-                                                  line <- randomRIO(0, 1)
-                                                  generateByStrategy [] side line
-                                            if player /= botname
-                                              then
-                                                return (ship : shipList)
-                                              else
-                                                return shipList
-                                        else
+inputShips listSize placedShips player =  if listSize < shipCount then
+                                            do
+                                              ship <- inputShip placedShips (shipLengthList !! listSize) player
+                                              shipList <- (inputShips (listSize + 1) (ship : placedShips) player)
+                                              return (ship : shipList)
+                                          else
                                             return []
+
+
+inputShipsStrat :: IO [Ship]
+inputShipsStrat = do
+                                                shipList <- do
+                                                      side <- randomRIO(0, 3)
+                                                      line <- randomRIO(0, 1)
+                                                      generateByStrategy [] side line
+                                                return shipList
          
 
 game :: [String] -> [Field] -> [[Ship]] -> IO ()
@@ -80,7 +73,12 @@ main = do
          putStrLn (name ++ ", enter your ships")
          shipsPlayer <- inputShips 0 [] name
          --to do add computer ships
-         shipsComputer <- inputShips 0 [] botname
+         strat <- randomRIO(0, 1) :: IO Int
+         shipsComputer <- if (strat == 0)
+          then
+            inputShips 0 [] botname
+          else
+            inputShipsStrat
 
          printMyFieldCli "bot" initField shipsComputer
 
